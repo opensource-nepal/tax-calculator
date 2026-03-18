@@ -1,4 +1,5 @@
 // ── Domain Types ───────────────────────────────────────────────────────────
+import type { ReactNode } from 'react'
 
 export type MaritalStatus = 'individual' | 'couple'
 
@@ -55,7 +56,7 @@ export interface KpiCard {
   accent: string
   bg: string
   border: string
-  icon: string
+  icon: ReactNode
 }
 
 // ── Breakpoint helpers ─────────────────────────────────────────────────────

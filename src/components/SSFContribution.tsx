@@ -6,7 +6,7 @@ const contributionStyle = {
   fontSize: 12,
   color: '#888d94',
   fontFamily: 'sans-serif',
-  textTransform: 'uppercase',
+  marginTop: 2,
 }
 
 interface SSFContributionProps {
@@ -64,88 +64,138 @@ export default function SSFContribution({
   })
 
   return (
-    <>
+    <div style={{ padding: '4px 0' }}>
       <Checkbox
+        style={{ fontWeight: 500, color: '#374151', fontFamily: 'sans-serif' }}
         onChange={e => {
           setSSFEnabled(e.target.checked)
           handleChange()
         }}
       >
-        SSF (Social Security Fund)
+        Social Security Fund (SSF)
       </Checkbox>
-      <Row gutter={8} style={{ marginTop: 8 }}>
-        <Col span={12}>
-          <span className="form-label">Basic Salary</span>
-          <Space.Compact>
-            <InputNumber
-              style={{ width: '100%' }}
-              value={basicSalaryPer}
-              disabled={!ssfEnabled}
-              max={100}
-              min={0}
-              onChange={v => {
-                setBasicSalaryPer(v)
-                handleChange()
-              }}
-            />
-            <Space.Addon>%</Space.Addon>
-          </Space.Compact>
-          <div style={contributionStyle}>
-            {ssfEnabled && monthlySalary && basicSalaryPer
-              ? fmt((monthlySalary * basicSalaryPer) / 100)
-              : 'NPR N/A'}
+
+      {ssfEnabled && (
+        <div
+          className="result-animate"
+          style={{
+            marginTop: 12,
+            padding: 12,
+            background: '#f8fafc',
+            borderRadius: 8,
+            border: '1px solid #e2e8f0',
+          }}
+        >
+          <Row gutter={[12, 12]}>
+            <Col span={24}>
+              <span className="form-label" style={{ fontSize: 10, color: '#94a3b8' }}>
+                Basic Salary % of Gross
+              </span>
+              <Space.Compact style={{ width: '100%' }}>
+                <InputNumber
+                  style={{ width: '100%', fontSize: 13 }}
+                  value={basicSalaryPer}
+                  disabled={!ssfEnabled}
+                  max={100}
+                  min={0}
+                  onChange={v => {
+                    setBasicSalaryPer(v)
+                    handleChange()
+                  }}
+                />
+                <Space.Addon>%</Space.Addon>
+              </Space.Compact>
+              <div style={contributionStyle}>
+                Amount:{' '}
+                <span style={{ color: '#64748b', fontWeight: 600 }}>
+                  {monthlySalary && basicSalaryPer
+                    ? fmt((monthlySalary * basicSalaryPer) / 100)
+                    : 'NPR 0'}
+                </span>
+              </div>
+            </Col>
+
+            <Col span={12}>
+              <span className="form-label" style={{ fontSize: 10, color: '#94a3b8' }}>
+                Employee Contribution
+              </span>
+              <Space.Compact style={{ width: '100%' }}>
+                <InputNumber
+                  style={{ width: '100%', fontSize: 13 }}
+                  value={employeeContributionPer}
+                  disabled={!ssfEnabled}
+                  max={100}
+                  min={0}
+                  onChange={v => {
+                    setEmployeeContributionPer(v)
+                    handleChange()
+                  }}
+                />
+                <Space.Addon>%</Space.Addon>
+              </Space.Compact>
+              <div style={contributionStyle}>
+                <span style={{ color: '#64748b', fontWeight: 600 }}>
+                  {monthlySalary && basicSalaryPer && employeeContributionPer
+                    ? fmt(
+                        (monthlySalary * basicSalaryPer * employeeContributionPer) /
+                          10000
+                      )
+                    : 'N/A'}
+                </span>
+              </div>
+            </Col>
+
+            <Col span={12}>
+              <span className="form-label" style={{ fontSize: 10, color: '#94a3b8' }}>
+                Employer Contribution
+              </span>
+              <Space.Compact style={{ width: '100%' }}>
+                <InputNumber
+                  style={{ width: '100%', fontSize: 13 }}
+                  value={employerContributionPer}
+                  disabled={!ssfEnabled}
+                  max={100}
+                  min={0}
+                  onChange={v => {
+                    setEmployerContributionPer(v)
+                    handleChange()
+                  }}
+                />
+                <Space.Addon>%</Space.Addon>
+              </Space.Compact>
+              <div style={contributionStyle}>
+                <span style={{ color: '#64748b', fontWeight: 600 }}>
+                  {monthlySalary && basicSalaryPer && employerContributionPer
+                    ? fmt(
+                        (monthlySalary * basicSalaryPer * employerContributionPer) /
+                          10000
+                      )
+                    : 'N/A'}
+                </span>
+              </div>
+            </Col>
+          </Row>
+
+          <div
+            style={{
+              marginTop: 12,
+              paddingTop: 10,
+              borderTop: '1px solid #e2e8f0',
+              fontSize: 12,
+              fontWeight: 600,
+              color: '#1e3a5f',
+              fontFamily: 'sans-serif',
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
+            <span>Total Monthly SSF</span>
+            <span style={{ fontFamily: 'monospace' }}>
+              {fmt(getMonthlySSF()?.deduction ?? 0)}
+            </span>
           </div>
-        </Col>
-      </Row>
-      <Row gutter={8} style={{ marginTop: 8, marginBottom: 8 }}>
-        <Col span={12}>
-          <span className="form-label">Employee Contribution</span>
-          <Space.Compact>
-            <InputNumber
-              style={{ width: '100%' }}
-              value={employeeContributionPer}
-              disabled={!ssfEnabled}
-              max={100}
-              min={0}
-              onChange={v => {
-                setEmployeeContributionPer(v)
-                handleChange()
-              }}
-            />
-            <Space.Addon>%</Space.Addon>
-          </Space.Compact>
-          <div style={contributionStyle}>
-            {ssfEnabled && monthlySalary && basicSalaryPer && employeeContributionPer
-              ? fmt((monthlySalary * basicSalaryPer * employeeContributionPer) / 10000)
-              : 'NPR N/A'}
-          </div>
-        </Col>
-        <Col span={12}>
-          <span className="form-label">Employer Contribution</span>
-          <Space.Compact>
-            <InputNumber
-              style={{ width: '100%' }}
-              value={employerContributionPer}
-              disabled={!ssfEnabled}
-              max={100}
-              min={0}
-              onChange={v => {
-                setEmployerContributionPer(v)
-                handleChange()
-              }}
-            />
-            <Space.Addon>%</Space.Addon>
-          </Space.Compact>
-          <div style={contributionStyle}>
-            {ssfEnabled && monthlySalary && basicSalaryPer && employerContributionPer
-              ? fmt((monthlySalary * basicSalaryPer * employerContributionPer) / 10000)
-              : 'NPR N/A'}
-          </div>
-        </Col>
-      </Row>
-      <div style={{ ...contributionStyle, fontWeight: 'bold' }}>
-        Monthly SSF: {fmt(getMonthlySSF()?.deduction)}
-      </div>
-    </>
+        </div>
+      )}
+    </div>
   )
 }

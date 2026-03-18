@@ -1,10 +1,11 @@
-import { Collapse, InputNumber, Radio, Space } from 'antd'
-import type { CollapseProps, RadioChangeEvent } from 'antd'
+import { Collapse, InputNumber, Space } from 'antd'
+import type { CollapseProps } from 'antd'
 import type { MaritalStatus } from '../types'
 import SSFContribution from './SSFContribution'
 import YearlyBonus from './YearlyBonus'
 import { SlabReference } from './SlabReference'
 import { useBreakpoints } from '../utils'
+import { User, Users, ChevronDown } from 'lucide-react'
 
 interface FormPanelProps {
   monthly: number | null
@@ -28,7 +29,21 @@ export function FormPanel({
   const advanceOptionsItems: CollapseProps['items'] = [
     {
       key: '1',
-      label: 'Advance Options',
+      label: (
+        <span
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+            fontFamily: 'sans-serif',
+            fontSize: 13,
+            fontWeight: 600,
+            color: '#374151',
+          }}
+        >
+          Additional Deductions
+        </span>
+      ),
       children: (
         <>
           <div style={{ marginTop: 8 }}>
@@ -42,23 +57,49 @@ export function FormPanel({
     },
   ]
 
+  const statusOptions: {
+    val: MaritalStatus
+    label: string
+    sub: string
+    Icon: typeof User
+  }[] = [
+    { val: 'individual', label: 'Individual', sub: 'Single filer', Icon: User },
+    { val: 'couple', label: 'Couple', sub: 'Joint filer', Icon: Users },
+  ]
+
   return (
     <div
       style={{
         background: '#fff',
         borderRight: isDesktop ? '1px solid #e5e7eb' : 'none',
         borderBottom: !isDesktop ? '1px solid #e5e7eb' : 'none',
-        padding: isMobile ? '24px 16px' : '36px 28px',
+        padding: isMobile ? '20px 16px' : '32px 28px',
         display: 'flex',
         flexDirection: 'column',
-        gap: 28,
+        gap: 24,
         boxSizing: 'border-box',
       }}
     >
+      {/* Salary Input */}
       <div>
-        <span className="form-label">Monthly Salary</span>
+        <span className="form-label">Monthly Gross Salary</span>
         <Space.Compact style={{ width: '100%' }}>
-          <Space.Addon>NPR</Space.Addon>
+          <Space.Addon
+            style={{
+              background: '#f3f4f6',
+              borderRight: '1px solid #d1d5db',
+              color: '#374151',
+              fontWeight: 600,
+              fontSize: 13,
+              fontFamily: 'sans-serif',
+              minWidth: 52,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            NPR
+          </Space.Addon>
 
           <InputNumber
             size="large"
@@ -72,56 +113,108 @@ export function FormPanel({
             onChange={val => onMonthlyChange(val)}
           />
         </Space.Compact>
+        <div
+          style={{
+            marginTop: 5,
+            fontSize: 11,
+            color: '#9ca3af',
+            fontFamily: 'sans-serif',
+          }}
+        >
+          Enter your total monthly income before any deductions
+        </div>
       </div>
 
+      {/* Divider */}
+      <div style={{ height: 1, background: '#f3f4f6' }} />
+
+      {/* Filing Status */}
       <div>
-        <Radio.Group
-          value={maritalStatus}
-          onChange={(e: RadioChangeEvent) =>
-            onMaritalStatusChange(e.target.value as MaritalStatus)
-          }
-          style={{ width: '100%', fontFamily: 'sans-serif' }}
-        >
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-            {(['individual', 'couple'] as MaritalStatus[]).map(val => (
-              <Radio.Button
+        <span className="form-label" style={{ marginBottom: 10, display: 'block' }}>
+          Filing Status
+        </span>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+          {statusOptions.map(({ val, label, sub, Icon }) => {
+            const isActive = maritalStatus === val
+            return (
+              <button
                 key={val}
-                value={val}
+                onClick={() => onMaritalStatusChange(val)}
                 style={{
                   width: '100%',
-                  textAlign: 'center',
-                  height: 68,
+                  height: 76,
                   borderRadius: 12,
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: 4,
-                  border:
-                    maritalStatus === val ? '2px solid #2563eb' : '1px solid #e5e7eb',
-                  background: maritalStatus === val ? '#eff6ff' : '#fafafa',
-                  fontSize: 13,
-                  // color: maritalStatus === val ? "#2563eb" : "#374151",
-                  lineHeight: 1,
+                  border: isActive ? '2px solid #2563eb' : '1.5px solid #e5e7eb',
+                  background: isActive ? '#eff6ff' : '#fafafa',
+                  cursor: 'pointer',
+                  fontFamily: 'sans-serif',
+                  transition: 'all 0.15s ease',
+                  outline: 'none',
+                  boxShadow: isActive ? '0 0 0 3px rgba(37,99,235,0.1)' : 'none',
                 }}
               >
-                <div style={{ fontSize: 20, paddingBottom: 8 }}>
-                  {val === 'individual' ? '👤' : '👫'}
-                </div>
-                <div>{val === 'individual' ? 'Individual' : 'Couple'}</div>
-              </Radio.Button>
-            ))}
-          </div>
-        </Radio.Group>
+                <Icon
+                  size={18}
+                  strokeWidth={2}
+                  color={isActive ? '#2563eb' : '#6b7280'}
+                />
+                <span
+                  style={{
+                    fontSize: 13,
+                    fontWeight: isActive ? 700 : 500,
+                    color: isActive ? '#2563eb' : '#374151',
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {label}
+                </span>
+                <span
+                  style={{
+                    fontSize: 10,
+                    color: isActive ? '#93c5fd' : '#9ca3af',
+                    fontWeight: 400,
+                  }}
+                >
+                  {sub}
+                </span>
+              </button>
+            )
+          })}
+        </div>
       </div>
 
+      {/* Divider */}
+      <div style={{ height: 1, background: '#f3f4f6' }} />
+
+      {/* Advanced Options */}
       <Collapse
         ghost
-        styles={{ header: { padding: 0 }, body: { padding: 0 } }}
+        expandIcon={({ isActive }) => (
+          <ChevronDown
+            size={14}
+            color="#6b7280"
+            strokeWidth={2}
+            style={{
+              transform: isActive ? 'rotate(180deg)' : 'rotate(0deg)',
+              transition: 'transform 0.2s ease',
+            }}
+          />
+        )}
+        styles={{ header: { padding: 0 }, body: { padding: '12px 0 0 0' } }}
         items={advanceOptionsItems}
       />
 
-      {!isMobile && <SlabReference maritalStatus={maritalStatus} />}
+      {!isMobile && (
+        <>
+          <div style={{ height: 1, background: '#f3f4f6' }} />
+          <SlabReference maritalStatus={maritalStatus} />
+        </>
+      )}
     </div>
   )
 }

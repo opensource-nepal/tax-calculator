@@ -9,8 +9,9 @@ import type {
 } from '../types'
 import { TAG_COLORS } from '../constants'
 import { fmt, useBreakpoints } from '../utils'
+import { Layers } from 'lucide-react'
 
-const { Title, Text } = Typography
+const { Text } = Typography
 
 interface TdsBreakdownTableProps {
   result: TaxResult
@@ -161,13 +162,32 @@ export function TdsBreakdownTable({ result }: Readonly<TdsBreakdownTableProps>) 
       styles={{ body: { padding: isMobile ? '16px 12px' : '24px 24px' } }}
     >
       {/* Header */}
-      <div style={{ marginBottom: 14 }}>
-        <Title
-          level={5}
-          style={{ margin: 0, color: '#1e3a5f', fontFamily: 'Georgia, serif' }}
+      <div style={{ marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div
+          style={{
+            width: 30,
+            height: 30,
+            borderRadius: 8,
+            background: '#f0f4ff',
+            border: '1px solid #c7d2fe',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Layers size={15} color="#4f46e5" strokeWidth={2} />
+        </div>
+        <span
+          style={{
+            margin: 0,
+            color: '#1e3a5f',
+            fontFamily: 'Georgia, serif',
+            fontWeight: 600,
+            fontSize: 15,
+          }}
         >
           TDS Breakdown
-        </Title>
+        </span>
       </div>
 
       {/* Table */}

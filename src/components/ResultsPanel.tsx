@@ -1,4 +1,4 @@
-import { CalculatorOutlined } from '@ant-design/icons'
+import { BarChart3, CalendarDays, Wallet, ArrowRight } from 'lucide-react'
 import type { TaxResult, MaritalStatus, KpiCard } from '../types'
 import { fmt, useBreakpoints } from '../utils'
 import KpiCards from './KpiCards'
@@ -10,11 +10,11 @@ function buildKpiCards(result: TaxResult): KpiCard[] {
     {
       label: 'Annual TDS',
       value: fmt(result.totalTax),
-      sub: `Taxable Income: ${fmt(result.annual)}`,
+      sub: `Taxable: ${fmt(result.annual)}`,
       accent: '#dc2626',
       bg: '#fff5f5',
       border: '#fecaca',
-      icon: '📊',
+      icon: <BarChart3 size={18} strokeWidth={1.8} color="#dc2626" />,
     },
     {
       label: 'Monthly TDS',
@@ -23,7 +23,7 @@ function buildKpiCards(result: TaxResult): KpiCard[] {
       accent: '#c2410c',
       bg: '#fff7ed',
       border: '#fed7aa',
-      icon: '📅',
+      icon: <CalendarDays size={18} strokeWidth={1.8} color="#c2410c" />,
     },
     {
       label: 'Monthly Take-Home',
@@ -32,7 +32,7 @@ function buildKpiCards(result: TaxResult): KpiCard[] {
       accent: '#15803d',
       bg: '#f0fdf4',
       border: '#bbf7d0',
-      icon: '💰',
+      icon: <Wallet size={18} strokeWidth={1.8} color="#15803d" />,
     },
   ]
 }
@@ -43,38 +43,97 @@ function EmptyState() {
   return (
     <div
       style={{
-        minHeight: isMobile ? 200 : 400,
+        minHeight: isMobile ? 200 : '100%',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: 8,
+        gap: 24,
+        padding: 32,
       }}
     >
-      <div style={{ fontSize: isMobile ? 48 : 64, color: '#d1d5db' }}>
-        <CalculatorOutlined />
-      </div>
+      {/* Steps guide */}
       <div
         style={{
-          fontSize: 16,
-          fontWeight: 600,
-          color: '#d1d5db',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 12,
+          maxWidth: 280,
+          width: '100%',
+        }}
+      >
+        {[
+          { step: '1', text: 'Enter your monthly salary' },
+          { step: '2', text: 'Choose your filing status' },
+          { step: '3', text: 'View your tax breakdown' },
+        ].map((item, i, arr) => (
+          <div
+            key={item.step}
+            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 12,
+                width: '100%',
+                padding: '10px 14px',
+                borderRadius: 10,
+                background: '#f8fafc',
+                border: '1px solid #e5e7eb',
+              }}
+            >
+              <div
+                style={{
+                  width: 26,
+                  height: 26,
+                  borderRadius: '50%',
+                  background: '#1e3a5f',
+                  color: '#fff',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 11,
+                  fontWeight: 700,
+                  fontFamily: 'sans-serif',
+                  flexShrink: 0,
+                }}
+              >
+                {item.step}
+              </div>
+              <span
+                style={{
+                  fontSize: 13,
+                  color: '#374151',
+                  fontFamily: 'sans-serif',
+                  fontWeight: 500,
+                }}
+              >
+                {item.text}
+              </span>
+            </div>
+            {i < arr.length - 1 && (
+              <div
+                style={{ width: 1, height: 8, background: '#d1d5db', margin: '2px 0' }}
+              />
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Arrow hint */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 6,
+          fontSize: 12,
+          color: '#9ca3af',
           fontFamily: 'sans-serif',
         }}
       >
-        Results will appear here
-      </div>
-      <div
-        style={{
-          fontSize: 13,
-          color: '#d1d5db',
-          maxWidth: 260,
-          textAlign: 'center',
-          fontFamily: 'sans-serif',
-        }}
-      >
-        Enter your monthly salary {isMobile ? 'above' : 'on the left'} to compute your
-        TDS
+        <ArrowRight size={14} color="#9ca3af" />
+        Results appear here instantly
       </div>
     </div>
   )
@@ -106,16 +165,22 @@ export function ResultsPanel({
       }}
     >
       {result && monthly ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-          <KpiCards cards={buildKpiCards(result)} />
-          <MonthlyCalculation
-            result={result}
-            monthly={monthly}
-            maritalStatus={maritalStatus}
-            ssfContribution={ssfContribution}
-            ssfDeduction={ssfDeduction}
-          />
-          <TdsBreakdownTable result={result} maritalStatus={maritalStatus} />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <div className="result-animate">
+            <KpiCards cards={buildKpiCards(result)} />
+          </div>
+          <div className="result-animate">
+            <MonthlyCalculation
+              result={result}
+              monthly={monthly}
+              maritalStatus={maritalStatus}
+              ssfContribution={ssfContribution}
+              ssfDeduction={ssfDeduction}
+            />
+          </div>
+          <div className="result-animate">
+            <TdsBreakdownTable result={result} maritalStatus={maritalStatus} />
+          </div>
         </div>
       ) : (
         <EmptyState />

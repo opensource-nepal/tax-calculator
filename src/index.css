@@ -3,7 +3,7 @@
   line-height: 1.5;
   font-weight: 400;
 
-  background-color: #242424;
+  background-color: #f8fafc;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -69,7 +69,7 @@ button:focus-visible {
   }
 }
 
-hr{
+hr {
   height: 0px;
   border: none;
   border-top: 1px solid #eee;
@@ -77,11 +77,11 @@ hr{
   width: 100%;
 }
 
-.amount-text{
+.amount-text {
   font-family: monospace;
 }
 
-.form-label{
+.form-label {
   display: block;
   margin-bottom: 4px;
   font-size: 11px;
@@ -90,4 +90,58 @@ hr{
   font-family: sans-serif;
   letter-spacing: 1px;
   text-transform: uppercase;
+}
+
+/* Hide number input spinner arrows */
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type='number'] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* Hide ant design InputNumber handlers globally */
+.ant-input-number-handler-wrap {
+  display: none !important;
+}
+
+/* Smooth result card fade-in */
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.result-animate {
+  animation: fadeSlideIn 0.25s ease both;
+}
+
+/* Stagger children */
+.result-animate:nth-child(1) { animation-delay: 0ms; }
+.result-animate:nth-child(2) { animation-delay: 60ms; }
+.result-animate:nth-child(3) { animation-delay: 120ms; }
+
+/* Smooth table row highlight */
+.ant-table-tbody > tr:hover > td {
+  background: #f0f4ff !important;
+  transition: background 0.15s ease;
+}
+
+/* Better focus rings for inputs */
+.ant-input-number:focus-within {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1) !important;
+}
+
+/* Better collapse transition */
+.ant-collapse-content {
+  transition: all 0.2s ease !important;
 }
